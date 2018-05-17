@@ -1,0 +1,10 @@
+import sys
+
+if __name__=='__main__':
+
+    app=QtWidgets.QApplication(sys.argv)
+    Form=QtWidgets.QMainWindow() #根据不同类型更换QtWidgets.QWidget()
+    ui=Ui_MainWindow() #类名称
+    ui.setupUi(Form)
+    Form.show()
+    sys.exit(app.exec_())
