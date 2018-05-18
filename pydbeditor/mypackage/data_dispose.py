@@ -4,7 +4,6 @@
 from ctypes import *
 from mystructs import i3_structs
 import collections
-import collections
 
 
 class Data_dispose():
@@ -67,7 +66,7 @@ class Data_dispose():
             if len(val_db) > 0:
                 if cb_type in Data_dispose.dict2str_func:
                     val_str = Data_dispose.dict2str_func[cb_type](val_db, cb_type)
-                    print('val_str:', val_str)
+                    #print('val_str:', val_str)
                     data_list.append(' ' + val_str)
         return data_list
                 
