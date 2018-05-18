@@ -76,11 +76,11 @@ class atg_i3r_cb_interface(Structure):
                 ('igp_shortcut_metric_value', c_ulong),
                 ('signaling_interface', c_ulong),
                 ('lambda_can_switch', c_ubyte),
-                ('relay_otu_number', c_short),
+                ('relay_otu_number', c_ushort),
                 ('is_relay', c_ubyte),
-                ('relay_otu_free_number', c_short),
+                ('relay_otu_free_number', c_ushort),
                 ('min_lambda_index', c_ulong),
-                ('normal_otu_number', c_short)]
+                ('normal_otu_number', c_ushort)]
     
 def atg_i3r_cb_interface_fill_data(struct_ptr, cb_type):
     res_dict = collections.OrderedDict()
@@ -167,7 +167,6 @@ def atg_i3r_cb_interface_analyse(data_ptr, cb_type):
     hex_str_buffer = create_string_buffer(hex_str)
     struct_ptr = cast(hex_str_buffer, POINTER(atg_i3r_cb_interface))
     print('struct_entity_len', sizeof(struct_ptr[0]))
-    print('struct_len', sizeof(atg_i3r_cb_interface))
     struct_dict = atg_i3r_cb_interface_fill_data(struct_ptr, cb_type)
     
     return struct_dict
