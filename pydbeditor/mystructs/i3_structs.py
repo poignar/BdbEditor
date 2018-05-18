@@ -49,7 +49,7 @@ class atg_i3r_cb_interface(Structure):
                 ('remote_ipv6_router_id_pad1', c_ubyte * 2),
                 ('remote_ipv6_router_id_address', c_ubyte * 32),
                 ('created_by_mib', c_ubyte),
-                ('in_operation', c_ubyte),
+                ('in_operation', c_ulong),
                 ('lock_data_link', c_ulong),
                 ('if_tunnel_id_total_length', c_ulong),
                 ('if_tunnel_id_struct_length', c_ulong),
@@ -63,7 +63,7 @@ class atg_i3r_cb_interface(Structure):
                 ('if_tunnel_id_tnnl_egress_lsrid_length', c_ubyte),
                 ('if_tunnel_id_tnnl_egress_lsrid_pad1', c_ubyte * 2),
                 ('if_tunnel_id_tnnl_egress_lsrid_address', c_ubyte * 32),
-                ('emulated_if', c_ubyte),
+                ('emulated_if', c_ulong),
                 ('bypass_prot_if_idx', c_ulong),
                 ('local_transport_node_id', c_ulong),
                 ('remote_sc_pc_id', c_ulong),
@@ -75,9 +75,9 @@ class atg_i3r_cb_interface(Structure):
                 ('igp_shortcut_metric_type', c_ulong),
                 ('igp_shortcut_metric_value', c_ulong),
                 ('signaling_interface', c_ulong),
-                ('lambda_can_switch', c_ubyte),
+                ('lambda_can_switch', c_ulong),
                 ('relay_otu_number', c_ushort),
-                ('is_relay', c_ubyte),
+                ('is_relay', c_ulong),
                 ('relay_otu_free_number', c_ushort),
                 ('min_lambda_index', c_ulong),
                 ('normal_otu_number', c_ushort)]
@@ -128,7 +128,7 @@ def atg_i3r_cb_interface_fill_data(struct_ptr, cb_type):
     res_dict['remote_ipv6_router_id_pad1'] = comn_tools.array2str(struct_ptr[0].remote_ipv6_router_id_pad1, 2, 1)
     res_dict['remote_ipv6_router_id_address'] = comn_tools.array2str(struct_ptr[0].remote_ipv6_router_id_address, 32, 1)
     res_dict['created_by_mib'] = comn_tools.hex_reverse(hex(struct_ptr[0].created_by_mib), 1)
-    res_dict['in_operation'] = comn_tools.hex_reverse(hex(struct_ptr[0].in_operation), 1)
+    res_dict['in_operation'] = comn_tools.hex_reverse(hex(struct_ptr[0].in_operation), 4)
     res_dict['lock_data_link'] = comn_tools.hex_reverse(hex(struct_ptr[0].lock_data_link), 4)
     res_dict['if_tunnel_id_total_length'] = comn_tools.hex_reverse(hex(struct_ptr[0].if_tunnel_id_total_length), 4)
     res_dict['if_tunnel_id_struct_length'] = comn_tools.hex_reverse(hex(struct_ptr[0].if_tunnel_id_struct_length), 4)
@@ -142,7 +142,7 @@ def atg_i3r_cb_interface_fill_data(struct_ptr, cb_type):
     res_dict['if_tunnel_id_tnnl_egress_lsrid_length'] = comn_tools.hex_reverse(hex(struct_ptr[0].if_tunnel_id_tnnl_egress_lsrid_length), 1)
     res_dict['if_tunnel_id_tnnl_egress_lsrid_pad1'] = comn_tools.array2str(struct_ptr[0].if_tunnel_id_tnnl_egress_lsrid_pad1, 2, 1)
     res_dict['if_tunnel_id_tnnl_egress_lsrid_address'] = comn_tools.array2str(struct_ptr[0].if_tunnel_id_tnnl_egress_lsrid_address, 32, 1)
-    res_dict['emulated_if'] = comn_tools.hex_reverse(hex(struct_ptr[0].emulated_if), 1)
+    res_dict['emulated_if'] = comn_tools.hex_reverse(hex(struct_ptr[0].emulated_if), 4)
     res_dict['bypass_prot_if_idx'] = comn_tools.hex_reverse(hex(struct_ptr[0].bypass_prot_if_idx), 4)
     res_dict['local_transport_node_id'] = comn_tools.hex_reverse(hex(struct_ptr[0].local_transport_node_id), 4)
     res_dict['remote_transport_node_id'] = comn_tools.hex_reverse(hex(struct_ptr[0].remote_transport_node_id), 4)
@@ -153,9 +153,9 @@ def atg_i3r_cb_interface_fill_data(struct_ptr, cb_type):
     res_dict['igp_shortcut_metric_type'] = comn_tools.hex_reverse(hex(struct_ptr[0].igp_shortcut_metric_type), 4)
     res_dict['igp_shortcut_metric_value'] = comn_tools.hex_reverse(hex(struct_ptr[0].igp_shortcut_metric_value), 4)
     res_dict['signaling_interface'] = comn_tools.hex_reverse(hex(struct_ptr[0].signaling_interface), 4)
-    res_dict['lambda_can_switch'] = comn_tools.hex_reverse(hex(struct_ptr[0].lambda_can_switch), 1)
+    res_dict['lambda_can_switch'] = comn_tools.hex_reverse(hex(struct_ptr[0].lambda_can_switch), 4)
     res_dict['relay_otu_number'] = comn_tools.hex_reverse(hex(struct_ptr[0].relay_otu_number), 2)
-    res_dict['is_relay'] = comn_tools.hex_reverse(hex(struct_ptr[0].is_relay), 1)
+    res_dict['is_relay'] = comn_tools.hex_reverse(hex(struct_ptr[0].is_relay), 4)
     res_dict['relay_otu_free_number'] = comn_tools.hex_reverse(hex(struct_ptr[0].relay_otu_free_number), 2)
     res_dict['min_lambda_index'] = comn_tools.hex_reverse(hex(struct_ptr[0].min_lambda_index), 4)
     res_dict['normal_otu_number'] = comn_tools.hex_reverse(hex(struct_ptr[0].normal_otu_number), 2)
