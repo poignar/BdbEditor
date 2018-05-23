@@ -3,21 +3,30 @@
 
 from ctypes import *
 from mystructs import i3_structs
+from dbutil import comn_tools
 import collections
 
 
 class Data_dispose():
-    analyse_func = {'03090002': i3_structs.atg_i3r_cb_interface_analyse, 
-                    '02000903': i3_structs.atg_i3r_cb_interface_analyse}
+    # a dict of functions to get data from txt strings and generate data dictionary
+    # notice: the cbtype id may reversed in different system we must support that
+    analyse_dict = {'03090002': [i3_structs.atg_i3r_cb_interface, i3_structs.atg_i3r_cb_interface_fill_data], 
+                    '02000903': [i3_structs.atg_i3r_cb_interface, i3_structs.atg_i3r_cb_interface_fill_data],
+                    '03090005': [i3_structs.atg_i3r_cb_mpls_interface, i3_structs.atg_i3r_cb_mpls_interface_fill_data],
+                    '05000903': [i3_structs.atg_i3r_cb_mpls_interface, i3_structs.atg_i3r_cb_mpls_interface_fill_data]}
     
-    dict2str_func ={'03090002': i3_structs.atg_i3r_cb_interface_dict2str,
-                    '02000903': i3_structs.atg_i3r_cb_interface_dict2str}
+    # a dict of functions to get data strings with data from dictionary
+    loadback_dict ={'03090002': i3_structs.atg_i3r_cb_interface_fill_struct,
+                    '02000903': i3_structs.atg_i3r_cb_interface_fill_struct,
+                    '03090005': i3_structs.atg_i3r_cb_mpls_interface_fill_struct,
+                    '05000903': i3_structs.atg_i3r_cb_mpls_interface_fill_struct}
 
-    
+    # class Data_dispose init function with input/output filename
     def __init__(self, input_file_name, output_file_name):
         self.ifile_name = input_file_name
         self.ofile_name = output_file_name
     
+    # read key/data from txtfile and return key/data dictionary
     def txt_read(self):
         filename = self.ifile_name
         key_data_dict = collections.OrderedDict()
@@ -42,8 +51,8 @@ class Data_dispose():
             
         return key_data_dict
 
-    def cb_type_analyse(self, key_data_dict,
-                          analyse_func_dict = analyse_func):
+    # function to get data from txt strings and generate data dictionary
+    def cb_type_analyse(self, key_data_dict):
         entry_dict = collections.OrderedDict()
         cb_list = list()
         for key,value in key_data_dict.items():
@@ -53,25 +62,31 @@ class Data_dispose():
             value = value[8:]
             cb_list.append(cb_type)
             #print('cb_type:', cb_type)
-            if cb_type in analyse_func_dict:
-                entry_dict[key] = analyse_func_dict[cb_type](value, cb_type)
+            if cb_type in Data_dispose.analyse_dict:
+                hex_str = bytes().fromhex(value)
+                hex_str_buffer = create_string_buffer(hex_str)
+                struct_ptr = cast(hex_str_buffer, POINTER(Data_dispose.analyse_dict[cb_type][0]))
+                print('struct_entity_len', sizeof(struct_ptr[0]))
+                entry_dict[key] = Data_dispose.analyse_dict[cb_type][1](struct_ptr, cb_type)
         cb_counter_dict = dict(collections.Counter(cb_list))
         return entry_dict, cb_counter_dict
     
+    # function to get data strings with data from dictionary
     def cb_datalist_create(self, entry_dict):
         data_list = list()
         for key_db, val_db in entry_dict.items():
             cb_type = val_db['cb_type'][2:]
             data_list.append(' ' + key_db)
             if len(val_db) > 0:
-                if cb_type in Data_dispose.dict2str_func:
-                    val_str = Data_dispose.dict2str_func[cb_type](val_db, cb_type)
-                    #print('val_str:', val_str)
-                    data_list.append(' ' + val_str)
+                if cb_type in Data_dispose.loadback_dict:
+                    struct_entity, struct_len = Data_dispose.loadback_dict[cb_type](val_db)
+                    print('struct_load_len', struct_len)
+                    hex_str = comn_tools.struct2str(struct_entity, struct_len, cb_type)
+                    data_list.append(' ' + hex_str)
         return data_list
                 
         
-    
+    # load string list back to txt file
     def txt_load(self, data_list):
         filename = self.ofile_name
         with open(filename, 'w+') as f:
